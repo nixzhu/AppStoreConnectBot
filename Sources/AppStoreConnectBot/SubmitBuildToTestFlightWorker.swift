@@ -5,7 +5,7 @@ import Bagbutik_AppStore
 import Bagbutik_TestFlight
 import CustomDump
 
-actor TestFlightWorker {
+actor SubmitBuildToTestFlightWorker {
     private let service: BagbutikService
     private let appID: String
     private let groupID: String
