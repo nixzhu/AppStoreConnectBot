@@ -1,6 +1,4 @@
-import Foundation
 import ArgumentParser
-import Bagbutik_Core
 
 struct SubmitBuildToTestFlightCommand: AsyncParsableCommand {
     static let configuration = CommandConfiguration(
@@ -20,18 +18,7 @@ struct SubmitBuildToTestFlightCommand: AsyncParsableCommand {
     var whatsNew: String
 
     mutating func run() async throws {
-        // swiftformat:disable acronyms
-        let service = try BagbutikService(
-            jwt: .init(
-                keyId: common.keyID,
-                issuerId: common.issuerID,
-                privateKeyPath: common.privateKeyPath
-            ),
-            fetchData: { request, delegate in
-                try await URLSession.shared.data(for: request, delegate: delegate)
-            }
-        )
-        // swiftformat:enable acronyms
+        let service = try common.service()
 
         let worker = SubmitBuildToTestFlightWorker(
             service: service,
