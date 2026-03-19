@@ -5,38 +5,70 @@ import Bagbutik_AppStore
 import Bagbutik_TestFlight
 import CustomDump
 
-actor SubmitBuildToTestFlightWorker {
+actor SubmitBuildToExternalGroupWorker {
     private let service: BagbutikService
     private let appID: String
-    private let groupID: String
     private let buildVersion: String
+    private let groupName: String
     private let whatsNew: String
 
     init(
         service: BagbutikService,
         appID: String,
-        groupID: String,
         buildVersion: String,
+        groupName: String,
         whatsNew: String
     ) {
         self.service = service
         self.appID = appID
-        self.groupID = groupID
         self.buildVersion = buildVersion
+        self.groupName = groupName
         self.whatsNew = whatsNew
     }
 
     func run() async throws {
+        print("➡️  Find build…")
+
         guard let build = try await findBuild() else {
-            print("No builds found.")
+            print("❌  No builds found.")
             return
         }
 
-        try await addBuildToGroup(build: build)
-        try await updateBuildLocalization(build: build, whatsNew: whatsNew)
-        let submission = try await submitBuildToTestFlight(build: build)
-        customDump(submission.attributes)
-        print("Build \(buildVersion) is submitted to TestFlight.")
+        customDump(build, name: "Build")
+
+        print("➡️  Update WhatsNew of build…")
+
+        let localization = try await updateWhatsNew(of: build)
+
+        customDump(localization, name: "Localization")
+
+        print("➡️  Find group…")
+
+        guard let group = try await findExternalGroup() else {
+            print("❌  No external group named `\(groupName)` found.")
+            return
+        }
+
+        customDump(group, name: "Group")
+
+        print("➡️  Add build to group if needed…")
+
+        try await addBuildToGroupIfNeeded(build: build, group: group)
+
+        let submissions = try await getSubmissions(for: build)
+
+        guard submissions.isEmpty else {
+            customDump(submissions, name: "⚠️  Existing submissions")
+            return
+        }
+
+        print("➡️  Submit build to review…")
+
+        let submission = try await submitBuildToReview(build: build)
+
+        customDump(submission, name: "Submission")
+
+        print("✅  Build \(buildVersion) is submitted to TestFlight.")
     }
 
     private func findBuild() async throws -> Build? {
@@ -79,33 +111,59 @@ actor SubmitBuildToTestFlightWorker {
         }
     }
 
-    private func addBuildToGroup(
-        build: Build
+    func getSubmissions(for build: Build) async throws -> [BetaAppReviewSubmission] {
+        try await service.request(
+            .listBetaAppReviewSubmissionsV1(filters: [.build([build.id])])
+        )
+        .data
+    }
+
+    func findExternalGroup() async throws -> BetaGroup? {
+        let groups = try await service.request(
+            .listBetaGroupsV1(
+                filters: [.app([appID])]
+            )
+        )
+        .data
+
+        guard let group = groups.first(where: { $0.attributes?.name == groupName }),
+              group.attributes?.isInternalGroup == false
+        else { return nil }
+
+        return group
+    }
+
+    private func addBuildToGroupIfNeeded(
+        build: Build,
+        group: BetaGroup
     ) async throws {
+        let groupIDs = build.relationships?.betaGroups?.data?.map { $0.id } ?? []
+
+        guard !groupIDs.contains(group.id) else { return }
+
         try await service.request(
             .createBetaGroupsForBuildV1(
                 id: build.id,
                 requestBody: .init(
-                    data: [.init(id: groupID)]
+                    data: [.init(id: group.id)]
                 )
             )
         )
     }
 
-    private func updateBuildLocalization(
-        build: Build,
-        whatsNew: String
-    ) async throws {
+    private func updateWhatsNew(
+        of build: Build
+    ) async throws -> BetaBuildLocalization {
         let locale = "en-US"
 
-        let first = try await service.request(
+        let enUS = try await service.request(
             .listBetaBuildLocalizationsV1(filters: [.build([build.id])])
         )
         .data
-        .first
+        .first(where: { $0.attributes?.locale == locale })
 
-        let enUS: BetaBuildLocalization = if let first {
-            first
+        let localization: BetaBuildLocalization = if let enUS {
+            enUS
         } else {
             try await service.request(
                 .createBetaBuildLocalizationV1(
@@ -120,20 +178,21 @@ actor SubmitBuildToTestFlightWorker {
             .data
         }
 
-        _ = try await service.request(
+        return try await service.request(
             .updateBetaBuildLocalizationV1(
-                id: enUS.id,
+                id: localization.id,
                 requestBody: .init(
                     data: .init(
-                        id: enUS.id,
+                        id: localization.id,
                         attributes: .init(whatsNew: whatsNew)
                     )
                 )
             )
         )
+        .data
     }
 
-    private func submitBuildToTestFlight(
+    private func submitBuildToReview(
         build: Build
     ) async throws -> BetaAppReviewSubmission {
         try await service.request(

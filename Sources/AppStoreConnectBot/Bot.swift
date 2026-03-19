@@ -4,7 +4,7 @@ import ArgumentParser
 struct Bot: AsyncParsableCommand {
     static let configuration = CommandConfiguration(
         subcommands: [
-            SubmitBuildToTestFlightCommand.self,
+            SubmitBuildToExternalGroupCommand.self,
         ]
     )
 }
