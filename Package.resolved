@@ -1,5 +1,5 @@
 {
-  "originHash" : "381c50425c0b832693af830569252368db95b7baf8e9ab42c372ed9e7b9b73cf",
+  "originHash" : "788b36bae72dd81a9a63a6811055776d4421f3ab569090244286ff4f2b60763d",
   "pins" : [
     {
       "identity" : "bagbutik",
@@ -15,8 +15,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/apple/swift-argument-parser.git",
       "state" : {
-        "revision" : "c5d11a805e765f52ba34ec7284bd4fcd6ba68615",
-        "version" : "1.7.0"
+        "revision" : "626b5b7b2f45e1b0b1c6f4a309296d1d21d7311b",
+        "version" : "1.7.1"
       }
     },
     {

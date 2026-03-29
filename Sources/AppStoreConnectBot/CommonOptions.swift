@@ -9,9 +9,6 @@ struct CommonOptions: ParsableArguments {
     @Option(name: .long, help: "Issuer ID")
     var issuerID: String
 
-    @Option(name: .long, help: "Private Key Path")
-    var privateKeyPath: String
-
     @Option(name: .long, help: "App ID")
     var appID: String
 
@@ -21,7 +18,7 @@ struct CommonOptions: ParsableArguments {
             jwt: .init(
                 keyId: keyID,
                 issuerId: issuerID,
-                privateKeyPath: privateKeyPath
+                privateKeyPath: "~/.private_keys/AuthKey_\(keyID).p8"
             ),
             fetchData: { request, delegate in
                 try await URLSession.shared.data(for: request, delegate: delegate)

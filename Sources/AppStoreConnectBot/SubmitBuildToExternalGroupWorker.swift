@@ -105,8 +105,8 @@ actor SubmitBuildToExternalGroupWorker {
                 return nil
             case .continuePolling:
                 print("Build \(buildVersion) is not available for now.")
-                print("Retry in 1 minute…")
-                try await Task.sleep(for: .seconds(60))
+                print("Retry in 30 seconds…")
+                try await Task.sleep(for: .seconds(30))
             }
         }
     }

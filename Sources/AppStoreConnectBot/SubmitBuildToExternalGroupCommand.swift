@@ -17,7 +17,15 @@ struct SubmitBuildToExternalGroupCommand: AsyncParsableCommand {
     @Option(name: .long, help: "What's New")
     var whatsNew: String
 
+    @Option(name: .long, help: "Wait Seconds")
+    var waitSeconds: Double = 0
+
     mutating func run() async throws {
+        if waitSeconds > 0 {
+            print("🍄 Wait \(waitSeconds) seconds…")
+            try await Task.sleep(for: .seconds(waitSeconds))
+        }
+
         let service = try common.service()
 
         let worker = SubmitBuildToExternalGroupWorker(
