@@ -20,6 +20,9 @@ struct SubmitBuildToExternalGroupCommand: AsyncParsableCommand {
     @Option(name: .long, help: "Wait Seconds")
     var waitSeconds: Double = 0
 
+    @Flag(name: .long, help: "Show verbose output")
+    var verbose = false
+
     mutating func run() async throws {
         if waitSeconds > 0 {
             print("🍄 Wait \(waitSeconds) seconds…")
@@ -33,7 +36,8 @@ struct SubmitBuildToExternalGroupCommand: AsyncParsableCommand {
             appID: common.appID,
             buildVersion: buildVersion,
             groupName: groupName,
-            whatsNew: whatsNew
+            whatsNew: whatsNew,
+            verbose: verbose
         )
 
         try await worker.run()

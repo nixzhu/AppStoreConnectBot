@@ -11,19 +11,22 @@ actor SubmitBuildToExternalGroupWorker {
     private let buildVersion: String
     private let groupName: String
     private let whatsNew: String
+    private let verbose: Bool
 
     init(
         service: BagbutikService,
         appID: String,
         buildVersion: String,
         groupName: String,
-        whatsNew: String
+        whatsNew: String,
+        verbose: Bool
     ) {
         self.service = service
         self.appID = appID
         self.buildVersion = buildVersion
         self.groupName = groupName
         self.whatsNew = whatsNew
+        self.verbose = verbose
     }
 
     func run() async throws {
@@ -34,13 +37,17 @@ actor SubmitBuildToExternalGroupWorker {
             return
         }
 
-        customDump(build, name: "Build")
+        if verbose {
+            customDump(build, name: "Build")
+        }
 
         print("➡️  Update WhatsNew of build…")
 
         let localization = try await updateWhatsNew(of: build)
 
-        customDump(localization, name: "Localization")
+        if verbose {
+            customDump(localization, name: "Localization")
+        }
 
         print("➡️  Find group…")
 
@@ -49,7 +56,9 @@ actor SubmitBuildToExternalGroupWorker {
             return
         }
 
-        customDump(group, name: "Group")
+        if verbose {
+            customDump(group, name: "Group")
+        }
 
         print("➡️  Add build to group if needed…")
 
@@ -66,7 +75,9 @@ actor SubmitBuildToExternalGroupWorker {
 
         let submission = try await submitBuildToReview(build: build)
 
-        customDump(submission, name: "Submission")
+        if verbose {
+            customDump(submission, name: "Submission")
+        }
 
         print("✅  Build \(buildVersion) is submitted to TestFlight.")
     }
