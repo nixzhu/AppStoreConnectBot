@@ -1,6 +1,6 @@
 import Foundation
 import ArgumentParser
-import Bagbutik_Core
+import Bagbutik
 
 struct CommonOptions: ParsableArguments {
     @Option(name: .long, help: "Key ID")

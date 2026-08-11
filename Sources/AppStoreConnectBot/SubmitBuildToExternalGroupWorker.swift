@@ -1,8 +1,5 @@
 import Foundation
-import Bagbutik_Core
-import Bagbutik_Models
-import Bagbutik_AppStore
-import Bagbutik_TestFlight
+import Bagbutik
 import CustomDump
 
 actor SubmitBuildToExternalGroupWorker {
@@ -51,7 +48,7 @@ actor SubmitBuildToExternalGroupWorker {
 
         print("➡️  Find group…")
 
-        guard let group = try await findExternalGroup() else {
+        guard let group = try await externalGroup() else {
             print("❌  No external group named `\(groupName)` found.")
             return
         }
@@ -64,7 +61,7 @@ actor SubmitBuildToExternalGroupWorker {
 
         try await addBuildToGroupIfNeeded(build: build, group: group)
 
-        let submissions = try await getSubmissions(for: build)
+        let submissions = try await submissions(for: build)
 
         guard submissions.isEmpty else {
             customDump(submissions, name: "⚠️  Existing submissions")
@@ -122,14 +119,14 @@ actor SubmitBuildToExternalGroupWorker {
         }
     }
 
-    func getSubmissions(for build: Build) async throws -> [BetaAppReviewSubmission] {
+    private func submissions(for build: Build) async throws -> [BetaAppReviewSubmission] {
         try await service.request(
             .listBetaAppReviewSubmissionsV1(filters: [.build([build.id])])
         )
         .data
     }
 
-    func findExternalGroup() async throws -> BetaGroup? {
+    private func externalGroup() async throws -> BetaGroup? {
         let groups = try await service.request(
             .listBetaGroupsV1(
                 filters: [.app([appID])]
