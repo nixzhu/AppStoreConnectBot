@@ -1,4 +1,4 @@
-// swift-tools-version: 6.3
+// swift-tools-version: 6.4
 
 import PackageDescription
 
@@ -8,15 +8,15 @@ let package = Package(
     dependencies: [
         .package(
             url: "https://github.com/apple/swift-argument-parser.git",
-            from: "1.8.2"
+            exact: "1.8.2"
         ),
         .package(
             url: "https://github.com/MortenGregersen/Bagbutik.git",
-            from: "24.0.0"
+            exact: "24.0.3"
         ),
         .package(
             url: "https://github.com/pointfreeco/swift-custom-dump.git",
-            from: "1.7.0"
+            exact: "1.7.3"
         ),
     ],
     targets: [
@@ -38,8 +38,12 @@ let package = Package(
             ],
             swiftSettings: [
                 .defaultIsolation(nil),
-                .enableUpcomingFeature("NonisolatedNonsendingByDefault"),
+                .enableUpcomingFeature("ExistentialAny"),
+                .enableUpcomingFeature("ImmutableWeakCaptures"),
                 .enableUpcomingFeature("InferIsolatedConformances"),
+                .enableUpcomingFeature("InternalImportsByDefault"),
+                .enableUpcomingFeature("MemberImportVisibility"),
+                .enableUpcomingFeature("NonisolatedNonsendingByDefault"),
             ]
         ),
     ]
