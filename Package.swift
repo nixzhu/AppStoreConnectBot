@@ -12,7 +12,7 @@ let package = Package(
         ),
         .package(
             url: "https://github.com/MortenGregersen/Bagbutik.git",
-            exact: "24.0.3"
+            exact: "24.1.0"
         ),
         .package(
             url: "https://github.com/pointfreeco/swift-custom-dump.git",

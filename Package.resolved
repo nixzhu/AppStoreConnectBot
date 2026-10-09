@@ -1,13 +1,13 @@
 {
-  "originHash" : "c9c0c3501c51d58abe0c63c9f32542b09a080ede8b2b6eaf1dec2eae82c1ec38",
+  "originHash" : "e14016eeb354d5d0c69df9f10ef335161579b34228208c8f87c2f79d98914868",
   "pins" : [
     {
       "identity" : "bagbutik",
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/MortenGregersen/Bagbutik.git",
       "state" : {
-        "revision" : "156b1e2d309f71857e4693f058d6fd1b672b4c45",
-        "version" : "24.0.3"
+        "revision" : "76f97fe020f00b622579454ddeaaed434a66fc6c",
+        "version" : "24.1.0"
       }
     },
     {
@@ -24,8 +24,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/apple/swift-asn1.git",
       "state" : {
-        "revision" : "d9a5b37470adc940d22c3bcd5ca6953a516b727f",
-        "version" : "1.7.2"
+        "revision" : "3b6410f7dee09eb33cdd26260c5fd47fda19b0e2",
+        "version" : "1.7.3"
       }
     },
     {
@@ -51,8 +51,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/pointfreeco/swift-issue-reporting",
       "state" : {
-        "revision" : "71c7c9a761d1ca6ed4ccb6ced040fe1c1a39e8e7",
-        "version" : "2.1.0"
+        "revision" : "75b000cea2ca6d7527a57e1b9cc0bdf21a9abe9f",
+        "version" : "2.1.1"
       }
     }
   ],
