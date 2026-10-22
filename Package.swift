@@ -4,7 +4,7 @@ import PackageDescription
 
 let package = Package(
     name: "AppStoreConnectBot",
-    platforms: [.macOS(.v26)],
+    platforms: [.macOS(.v27)],
     dependencies: [
         .package(
             url: "https://github.com/apple/swift-argument-parser.git",
@@ -12,7 +12,7 @@ let package = Package(
         ),
         .package(
             url: "https://github.com/MortenGregersen/Bagbutik.git",
-            exact: "24.1.0"
+            exact: "24.2.2"
         ),
         .package(
             url: "https://github.com/pointfreeco/swift-custom-dump.git",

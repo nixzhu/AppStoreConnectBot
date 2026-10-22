@@ -8,6 +8,7 @@ actor SubmitBuildToExternalGroupWorker {
     private let buildVersion: String
     private let groupName: String
     private let whatsNew: String
+    private let maxRetries: Int
     private let verbose: Bool
 
     init(
@@ -16,6 +17,7 @@ actor SubmitBuildToExternalGroupWorker {
         buildVersion: String,
         groupName: String,
         whatsNew: String,
+        maxRetries: Int,
         verbose: Bool
     ) {
         self.service = service
@@ -23,6 +25,7 @@ actor SubmitBuildToExternalGroupWorker {
         self.buildVersion = buildVersion
         self.groupName = groupName
         self.whatsNew = whatsNew
+        self.maxRetries = maxRetries
         self.verbose = verbose
     }
 
@@ -105,6 +108,8 @@ actor SubmitBuildToExternalGroupWorker {
             return .continuePolling
         }
 
+        var retries = 0
+
         while true {
             switch try await checkLatestBuild() {
             case .found(let build):
@@ -112,9 +117,14 @@ actor SubmitBuildToExternalGroupWorker {
             case .notFound:
                 return nil
             case .continuePolling:
-                print("Build \(buildVersion) is not available for now.")
-                print("Retry in 30 seconds…")
-                try await Task.sleep(for: .seconds(30))
+                if retries < maxRetries {
+                    retries += 1
+                    print("Build \(buildVersion) is not available for now.")
+                    print("Retry in 60 seconds…")
+                    try await Task.sleep(for: .seconds(60))
+                } else {
+                    return nil
+                }
             }
         }
     }

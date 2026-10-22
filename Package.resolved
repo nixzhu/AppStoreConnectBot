@@ -1,13 +1,13 @@
 {
-  "originHash" : "e14016eeb354d5d0c69df9f10ef335161579b34228208c8f87c2f79d98914868",
+  "originHash" : "e13856caee1b716852cc3bea886f0585aed760b507ca2284a756f80b8f6db18e",
   "pins" : [
     {
       "identity" : "bagbutik",
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/MortenGregersen/Bagbutik.git",
       "state" : {
-        "revision" : "76f97fe020f00b622579454ddeaaed434a66fc6c",
-        "version" : "24.1.0"
+        "revision" : "a72c7f35bd39d492f0258b2ffc89ed008e76778c",
+        "version" : "24.2.2"
       }
     },
     {
@@ -51,8 +51,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/pointfreeco/swift-issue-reporting",
       "state" : {
-        "revision" : "75b000cea2ca6d7527a57e1b9cc0bdf21a9abe9f",
-        "version" : "2.1.1"
+        "revision" : "b23bb4493c439d3e05152bc167014235ba3d47fc",
+        "version" : "2.1.2"
       }
     }
   ],

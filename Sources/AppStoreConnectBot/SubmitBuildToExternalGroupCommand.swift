@@ -20,6 +20,9 @@ struct SubmitBuildToExternalGroupCommand: AsyncParsableCommand {
     @Option(name: .long, help: "Wait Seconds")
     var waitSeconds: Double = 0
 
+    @Option(name: .long, help: "Max Retries")
+    var maxRetries: Int = 10
+
     @Flag(name: .long, help: "Show verbose output")
     var verbose = false
 
@@ -37,6 +40,7 @@ struct SubmitBuildToExternalGroupCommand: AsyncParsableCommand {
             buildVersion: buildVersion,
             groupName: groupName,
             whatsNew: whatsNew,
+            maxRetries: maxRetries,
             verbose: verbose
         )
 
